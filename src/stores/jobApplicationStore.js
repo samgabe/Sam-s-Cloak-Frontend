@@ -152,7 +152,7 @@ export const useJobApplicationStore = defineStore('jobApplications', {
             this.error = null
             try {
                 const result = await jobApplicationsAPI.tailorResume(id)
-                return result.tailored_resume
+                return result
             } catch (error) {
                 this.error = error.response?.data?.message || 'Failed to generate resume'
                 throw error

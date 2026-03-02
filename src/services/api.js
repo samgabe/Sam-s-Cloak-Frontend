@@ -9,7 +9,8 @@ const apiClient = axios.create({
     baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json'
-    }
+    },
+    timeout: 10000 // 10 second timeout
 })
 
 // Request interceptor to add auth token
@@ -31,6 +32,12 @@ apiClient.interceptors.response.use(
         if (error.response?.status === 401) {
             localStorage.removeItem('access_token')
             window.location.href = '/login'
+        } else if (error.code === 'ECONNABORTED') {
+            error.message = 'Request timeout. Please check your connection.'
+        } else if (error.code === 'NETWORK_ERROR') {
+            error.message = 'Network error. Please check your connection.'
+        } else if (error.response?.status === 500) {
+            error.message = 'Server error. Please try again later.'
         }
         return Promise.reject(error)
     }
@@ -137,19 +144,43 @@ export const authAPI = {
      * Login user
      */
     async login(email, password) {
-        const response = await apiClient.post('/users/login', { email, password })
-        if (response.data.access_token) {
-            localStorage.setItem('access_token', response.data.access_token)
+        try {
+            const response = await apiClient.post('/users/login', { email, password })
+            if (response.data.access_token) {
+                localStorage.setItem('access_token', response.data.access_token)
+            }
+            return response.data
+        } catch (error) {
+            if (error.response?.status === 401) {
+                throw new Error('Invalid email or password')
+            } else if (error.response?.status === 500) {
+                throw new Error('Server error. Please try again later.')
+            } else if (error.code === 'ECONNABORTED') {
+                throw new Error('Login timeout. Please check your connection.')
+            }
+            throw error
         }
-        return response.data
     },
 
     /**
      * Register new user
      */
     async register(userData) {
-        const response = await apiClient.post('/users/register', userData)
-        return response.data
+        try {
+            const response = await apiClient.post('/users/register', userData)
+            return response.data
+        } catch (error) {
+            if (error.response?.status === 409) {
+                throw new Error('Email already registered')
+            } else if (error.response?.status === 400) {
+                throw new Error(error.response.data.detail || 'Invalid registration data')
+            } else if (error.response?.status === 500) {
+                throw new Error('Server error. Please try again later.')
+            } else if (error.code === 'ECONNABORTED') {
+                throw new Error('Registration timeout. Please check your connection.')
+            }
+            throw error
+        }
     },
 
     /**
@@ -173,6 +204,21 @@ export const authAPI = {
      */
     async updateMasterResume(resumeData) {
         const response = await apiClient.put('/users/me/resume', resumeData)
+        return response.data
+    },
+
+    /**
+     * Upload master resume file
+     */
+    async uploadMasterResume(file) {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await apiClient.post('/users/me/resume/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
         return response.data
     }
 }

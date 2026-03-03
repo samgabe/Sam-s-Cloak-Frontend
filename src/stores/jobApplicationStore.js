@@ -169,9 +169,26 @@ export const useJobApplicationStore = defineStore('jobApplications', {
             this.error = null
             try {
                 const result = await jobApplicationsAPI.generateCoverLetter(id)
-                return result.cover_letter
+                return result
             } catch (error) {
                 this.error = error.response?.data?.message || 'Failed to generate cover letter'
+                throw error
+            } finally {
+                this.loading = false
+            }
+        },
+
+        /**
+         * Generate application email (subject + body)
+         */
+        async generateApplicationEmail(id) {
+            this.loading = true
+            this.error = null
+            try {
+                const result = await jobApplicationsAPI.generateApplicationEmail(id)
+                return result
+            } catch (error) {
+                this.error = error.response?.data?.message || 'Failed to generate application email'
                 throw error
             } finally {
                 this.loading = false

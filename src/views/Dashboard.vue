@@ -17,11 +17,38 @@
               <p class="text-xs text-gray-500">AI-Powered Job Application Assistant</p>
             </div>
           </div>
-          
+
           <div class="flex items-center space-x-4">
-            <button class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
-              Dashboard
-            </button>
+            <div class="relative group">
+              <button
+                class="px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors flex items-center gap-2"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download Resume
+              </button>
+              <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+                <button
+                  @click="exportMasterResume('pdf')"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg flex items-center gap-2"
+                >
+                  <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  Download as PDF
+                </button>
+                <button
+                  @click="exportMasterResume('docx')"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-b-lg flex items-center gap-2"
+                >
+                  <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download as Word
+                </button>
+              </div>
+            </div>
             <button 
               @click="handleLogout"
               class="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
@@ -355,23 +382,62 @@
             <p class="text-green-700 text-sm">Your resume has been optimized for the target position.</p>
           </div>
           
-          <div class="bg-gray-50 rounded-lg p-6">
-            <pre class="whitespace-pre-wrap text-sm text-gray-800 font-mono">{{ tailoredResume }}</pre>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Original Resume Column -->
+            <div class="bg-gray-50 rounded-lg p-6">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2v-4a2 2 0 012-2h6a2 2 0 012 2v4a2 2 0 01-2 2h6a2 2 0 002-2v-4a2 2 0 00-2-2z" />
+                </svg>
+                Your Original Resume
+              </h4>
+              <div class="bg-white rounded border border-gray-200 p-4 max-h-96 overflow-y-auto">
+                <pre class="whitespace-pre-wrap text-xs text-gray-700 font-mono">{{ originalResume }}</pre>
+              </div>
+            </div>
+            
+            <!-- Tailored Resume Column -->
+            <div class="bg-green-50 rounded-lg p-6">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2l2-2m-2 4l2-2m-2 4l2-2m6 2l2-2m-2 4l2-2" />
+                </svg>
+                AI-Optimized Resume
+              </h4>
+              <div class="bg-white rounded border border-green-200 p-4 max-h-96 overflow-y-auto">
+                <pre class="whitespace-pre-wrap text-xs text-gray-800 font-mono">{{ tailoredResume }}</pre>
+              </div>
+            </div>
           </div>
         </div>
         
         <div class="flex gap-3 mt-6 pt-6 border-t border-gray-200">
           <button 
-            @click="downloadTailoredResume"
-            class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+            @click="downloadTailoredResume('pdf')"
+            class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center gap-2"
           >
-            Download Resume
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            Download PDF
+          </button>
+          <button 
+            @click="downloadTailoredResume('docx')"
+            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Download Word
           </button>
           <button 
             @click="copyTailoredResume"
-            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center gap-2"
           >
-            Copy to Clipboard
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            Copy Text
           </button>
           <button 
             @click="showTailoredResumeModal = false"
@@ -498,8 +564,66 @@
           >
             {{ analyzing ? 'Analyzing...' : 'Analyze' }}
           </button>
+          <button
+            @click="openEmailModal(selectedApplication.id)"
+            :disabled="generatingEmail"
+            class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-medium"
+          >
+            {{ generatingEmail ? 'Generating Email...' : 'Generate Email' }}
+          </button>
           <button 
             @click="showDetailsModal = false"
+            class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Application Email Modal -->
+    <div v-if="showEmailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl p-8 max-w-2xl w-full shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold text-gray-900">Application Email</h2>
+          <button @click="showEmailModal = false" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+            <input
+              type="text"
+              v-model="emailSubject"
+              readonly
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Body</label>
+            <textarea
+              v-model="emailBody"
+              readonly
+              rows="8"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm whitespace-pre-wrap"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6 pt-6 border-t border-gray-200">
+          <button
+            @click="copyEmailToClipboard"
+            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            Copy Email
+          </button>
+          <button
+            @click="showEmailModal = false"
             class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
           >
             Close
@@ -515,7 +639,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useJobApplicationStore } from '../stores/jobApplicationStore'
 import JobCard from '../components/JobCard.vue'
-import { authAPI } from '../services/api'
+import { authAPI, documentsAPI } from '../services/api'
 
 const router = useRouter()
 const store = useJobApplicationStore()
@@ -524,13 +648,17 @@ const showUrlModal = ref(false)
 const showDetailsModal = ref(false)
 const showResumeModal = ref(false)
 const showTailoredResumeModal = ref(false)
+const showEmailModal = ref(false)
 const selectedFile = ref(null)
 const selectedApplication = ref(null)
 const resumeFile = ref(null)
 const tailoredResume = ref('')
+const tailoredDocumentId = ref(null)
+const originalResume = ref('Loading original resume...')
 const jobUrl = ref('')
 const uploading = ref(false)
 const fetching = ref(false)
+const downloadingMasterResume = ref(false)
 
 const applications = ref([])
 const loading = ref(false)
@@ -552,6 +680,9 @@ const averageMatchScore = computed(() => {
 })
 
 const analyzing = ref(false)
+const generatingEmail = ref(false)
+const emailSubject = ref('')
+const emailBody = ref('')
 
 const formatDate = (dateString) => {
   const date = new Date(dateString)
@@ -645,21 +776,42 @@ const analyzeApplication = async (id) => {
   }
 }
 
+const openEmailModal = async (id) => {
+  generatingEmail.value = true
+  try {
+    const payload = await store.generateApplicationEmail(id)
+    emailSubject.value = payload.subject
+    emailBody.value = payload.body
+    showEmailModal.value = true
+  } catch (e) {
+    alert('Failed to generate application email: ' + e.message)
+  } finally {
+    generatingEmail.value = false
+  }
+}
+
 const tailorResume = async (id) => {
   try {
-    const resume = await store.tailorResume(id)
-    console.log('Tailored resume response:', resume)
+    const result = await store.tailorResume(id)
+    console.log('Tailored resume response:', result)
     
     // Extract the resume text from the response
-    if (resume && resume.tailored_resume) {
-      tailoredResume.value = resume.tailored_resume
-    } else if (typeof resume === 'string') {
-      tailoredResume.value = resume
+    if (result && result.tailored_resume) {
+      tailoredResume.value = result.tailored_resume
+      tailoredDocumentId.value = result.document_id || null
+    } else if (typeof result === 'string') {
+      tailoredResume.value = result
+      tailoredDocumentId.value = null
     } else {
       tailoredResume.value = 'Error: No resume content received'
+      tailoredDocumentId.value = null
     }
     
     console.log('Final tailoredResume value:', tailoredResume.value)
+    
+    // Load original resume for comparison
+    await getOriginalResume()
+    
     showTailoredResumeModal.value = true
   } catch (e) {
     alert('Resume generation failed: ' + e.message)
@@ -702,33 +854,69 @@ const uploadResume = async () => {
   }
 }
 
-const downloadTailoredResume = () => {
-  console.log('Download clicked, resume value:', tailoredResume.value)
-  
-  if (!tailoredResume.value || tailoredResume.value.trim() === '') {
-    alert('No resume content to download!')
-    return
-  }
-  
+const exportMasterResume = async (format = 'pdf') => {
+  downloadingMasterResume.value = true
   try {
-    // Create a blob from the resume text
-    const blob = new Blob([tailoredResume.value], { type: 'text/markdown' })
+    const response = await authAPI.exportMasterResume(format, 'ats')
+    const blob = response.data
     const url = URL.createObjectURL(blob)
-    
-    // Create a temporary link and trigger download
     const link = document.createElement('a')
     link.href = url
-    link.download = 'tailored_resume.md'
+    const extension = format === 'docx' ? 'docx' : 'pdf'
+    link.download = `resume_ats.${extension}`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
-    
-    console.log('Download completed successfully')
   } catch (e) {
-    console.error('Download failed:', e)
-    alert('Download failed: ' + e.message)
+    alert('Failed to download resume: ' + e.message)
+  } finally {
+    downloadingMasterResume.value = false
   }
+}
+
+const copyEmailToClipboard = async () => {
+  if (!emailSubject.value && !emailBody.value) {
+    alert('No email content to copy')
+    return
+  }
+  const combined = `Subject: ${emailSubject.value}\n\n${emailBody.value}`
+  try {
+    await navigator.clipboard.writeText(combined)
+    alert('Email copied to clipboard!')
+  } catch (e) {
+    alert('Failed to copy email: ' + e.message)
+  }
+}
+
+const downloadTailoredResume = (format = 'pdf') => {
+  console.log('Download clicked, format:', format, 'document id:', tailoredDocumentId.value)
+
+  if (!tailoredDocumentId.value) {
+    alert('No downloadable document available yet. Please re-generate the resume.')
+    return
+  }
+
+  const fileExtension = format === 'docx' ? 'docx' : 'pdf'
+  const fileName = `tailored_resume_ats.${fileExtension}`
+
+  documentsAPI
+    .downloadDocument(tailoredDocumentId.value, format, 'ats')
+    .then((response) => {
+      const blob = response.data
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = fileName
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    })
+    .catch((e) => {
+      console.error('Download failed:', e)
+      alert('Download failed: ' + e.message)
+    })
 }
 
 const copyTailoredResume = async () => {
@@ -760,6 +948,72 @@ const copyTailoredResume = async () => {
       alert('Copy failed: ' + fallbackError.message)
     }
   }
+}
+
+const getOriginalResume = async () => {
+  try {
+    originalResume.value = 'Loading original resume...'
+    const response = await authAPI.getUserProfile()
+    console.log('User profile response:', response)
+    
+    if (response.master_resume && response.master_resume.text) {
+      // Format the extracted text to look more professional
+      const formattedText = formatResumeText(response.master_resume.text)
+      originalResume.value = formattedText
+      return formattedText
+    } else if (response.master_resume) {
+      const resumeText = typeof response.master_resume === 'string' 
+        ? response.master_resume 
+        : JSON.stringify(response.master_resume, null, 2)
+      const formattedText = formatResumeText(resumeText)
+      originalResume.value = formattedText
+      return formattedText
+    } else {
+      originalResume.value = 'No original resume found. Please upload your resume first.'
+      return 'No original resume found. Please upload your resume first.'
+    }
+  } catch (e) {
+    console.error('Failed to fetch original resume:', e)
+    originalResume.value = 'Failed to load original resume'
+    return 'Failed to load original resume'
+  }
+}
+
+const formatResumeText = (rawText) => {
+  if (!rawText) return 'No resume content found.'
+  
+  // Clean and format the text
+  const lines = rawText.split('\n')
+  const formattedLines = []
+  
+  for (const line of lines) {
+    const trimmedLine = line.trim()
+    if (!trimmedLine) continue
+    
+    // Detect headers (all caps or common resume sections)
+    if (trimmedLine === trimmedLine.toUpperCase() && trimmedLine.length < 50) {
+      formattedLines.push(`## ${trimmedLine}`)
+    }
+    // Detect contact info (email, phone, LinkedIn)
+    else if (trimmedLine.includes('@') || trimmedLine.toLowerCase().includes('linkedin') || 
+             trimmedLine.replace(/[-\s]/g, '').match(/^\d+$/)) {
+      formattedLines.push(`**${trimmedLine}**`)
+    }
+    // Detect bullet points or work experience
+    else if (trimmedLine.startsWith('•') || trimmedLine.startsWith('-') || trimmedLine.startsWith('*')) {
+      formattedLines.push(`• ${trimmedLine.substring(1).trim()}`)
+    }
+    // Detect dates
+    else if (/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(trimmedLine)) {
+      formattedLines.push(`**${trimmedLine}**`)
+    }
+    // Regular text
+    else {
+      formattedLines.push(trimmedLine)
+    }
+  }
+  
+  return formattedLines.join('\n\n')
 }
 
 const handleLogout = () => {

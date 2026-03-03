@@ -113,6 +113,14 @@ export const jobApplicationsAPI = {
     },
 
     /**
+     * Generate tailored application email (subject + body)
+     */
+    async generateApplicationEmail(id) {
+        const response = await apiClient.post(`/applications/${id}/email`)
+        return response.data
+    },
+
+    /**
      * Update application status
      */
     async updateStatus(id, status) {
@@ -220,6 +228,38 @@ export const authAPI = {
             }
         })
         return response.data
+    },
+
+    /**
+     * Get user profile with master resume
+     */
+    async getUserProfile() {
+        const response = await apiClient.get('/users/me')
+        return response.data
+    },
+
+    /**
+     * Export master resume as PDF or DOCX
+     */
+    async exportMasterResume(format = 'pdf', template = 'ats') {
+        const response = await apiClient.get('/users/me/resume/export', {
+            params: { format, template },
+            responseType: 'blob'
+        })
+        return response
+    }
+}
+
+export const documentsAPI = {
+    /**
+     * Download a tailored document (resume/cover letter) as PDF/DOCX
+     */
+    async downloadDocument(documentId, format = 'pdf', template = 'ats') {
+        const response = await apiClient.get(`/documents/${documentId}/download`, {
+            params: { format, template },
+            responseType: 'blob'
+        })
+        return response
     }
 }
 
